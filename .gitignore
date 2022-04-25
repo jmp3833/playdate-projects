@@ -1,3 +1,5 @@
 *.aif
 *.wav
 *.pdx
+Mode7Driver/**/*.png
+

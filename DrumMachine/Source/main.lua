@@ -31,14 +31,6 @@ d:setFeedback(0.1)
 d:setMix(0.2)
 snd.addEffect(d)
 
-
---[[
-	We'll make a separate instrument for each track so that we can play each sample at different
-	pitches if we want (though that's not implemented yet--we always use midi note 60=middle C,
-	which plays back samples at normal rate). We could instead create one instrument with the
-	samples assigned to different notes, using i:addVoice(s, note)
-]]
-
 function newTrack(file)
 	local t = snd.track.new()
 	local i = snd.instrument.new()
