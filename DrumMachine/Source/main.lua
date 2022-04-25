@@ -1,3 +1,5 @@
+import 'CoreLibs/crank'
+
 --[[
 	16-step sample sequencer
 	
@@ -74,12 +76,12 @@ for i=1,#tracks do sequence:addTrack(tracks[i].track) end
 
 local LEVEL_INCREMENTS = 9
 
-local function updateTrack(t, notes)
+local function updateTrack(t, notes, nval)
 	local list = {}
 	
 	for i=1,#notes do
 		if notes[i] > 0 then
-			list[#list+1] = { note=60, step=i, length=10, velocity=notes[i]/LEVEL_INCREMENTS }
+			list[#list+1] = { note=nval, step=i, length=10, velocity=notes[i]/LEVEL_INCREMENTS }
 		end
 	end
 
@@ -89,10 +91,10 @@ end
 
 -- initial data
 
-updateTrack(tracks[1], { 9, 0, 0, 0,  0, 0, 0, 0,  0, 0, 6, 0,  0, 0, 0, 0 })
-updateTrack(tracks[2], { 0, 0, 0, 0,  9, 0, 0, 0,  0, 7, 0, 0,  9, 0, 0, 0 })
-updateTrack(tracks[3], { 8, 0, 5, 0,  6, 0, 5, 0,  8, 0, 5, 0,  6, 0, 5, 0 })
-updateTrack(tracks[9], { 0, 0, 0, 3,  0, 2, 0, 0,  0, 0, 0, 3,  0, 0, 0, 0 })
+updateTrack(tracks[1], { 9, 0, 0, 0,  0, 0, 0, 0,  0, 0, 6, 0,  0, 0, 0, 0 }, 60)
+updateTrack(tracks[2], { 0, 0, 0, 0,  9, 0, 0, 0,  0, 7, 0, 0,  9, 0, 0, 0 }, 60)
+updateTrack(tracks[3], { 8, 0, 5, 0,  6, 0, 5, 0,  8, 0, 5, 0,  6, 0, 5, 0 }, 60)
+updateTrack(tracks[9], { 0, 0, 0, 3,  0, 2, 0, 0,  0, 0, 0, 3,  0, 0, 0, 0 }, 60)
 
 selectedRow = 1
 selectedColumn = 1
@@ -176,6 +178,7 @@ end
 
 local adjusted = false
 local adjusting = false
+local cnote = 60;
 
 function playdate.leftButtonDown()
 	if adjusting then playdate.AButtonUp() adjusted = true end
@@ -189,7 +192,7 @@ end
 
 local function setTrackNote(track, pos, val)
 	track.notes[pos] = val
-	updateTrack(track,track.notes)
+	updateTrack(track,track.notes, cnote)
 	drawGrid()
 
 	if not isRunning then
@@ -209,8 +212,10 @@ local function adjustSelectedNote(d)
 end
 
 function playdate.cranked(change, accelaratedChange)
-	print("crank that")
-	
+  local ticks = playdate.getCrankTicks(60)
+  print(ticks)
+  cnote = cnote + ticks;
+  updateTrack(tracks[1], { 9, 0, 0, 0,  0, 0, 0, 0,  0, 0, 6, 0,  0, 0, 0, 0 }, cnote)
 end
 
 function playdate.upButtonDown()
