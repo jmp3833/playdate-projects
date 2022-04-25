@@ -213,9 +213,9 @@ end
 
 function playdate.cranked(change, accelaratedChange)
   local ticks = playdate.getCrankTicks(60)
-  print(ticks)
   cnote = cnote + ticks;
-  updateTrack(tracks[1], { 9, 0, 0, 0,  0, 0, 0, 0,  0, 0, 6, 0,  0, 0, 0, 0 }, cnote)
+	local track = tracks[selectedRow]
+  updateTrack(track, track.notes, cnote)
 end
 
 function playdate.upButtonDown()
