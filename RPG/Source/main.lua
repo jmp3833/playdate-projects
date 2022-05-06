@@ -4,10 +4,13 @@ import 'CoreLibs/timer'
 local dialog = rpg.dialog
 
 --temp, begin rendering dialog
-dialog.drawDialog()
-
-dialog.drawInitiatorText("Hey there...")
-dialog.drawResponderText("Nice to see u")
+dialog.conversation("Hey there", 
+  "nice to see u", 
+  false,
+  function () 
+    print('next set')
+    dialog.conversation("Another response", "I see...", true) 
+  end)
 
 function playdate.update()
   playdate.frameTimer.updateTimers()

@@ -12,7 +12,8 @@ local initiatorTextOffset
 local responderBuffer
 local responderTextOffset
 
-local speaker
+local speaker -- true if initiator speaking
+local textDrawnCb -- invoked when all text rendered 
 
 rpg.dialog = {}
 
@@ -27,14 +28,33 @@ function rpg.dialog.drawDialog()
   chat:draw(0, 0)
 end
 
-function rpg.dialog.drawInitiatorText(text)
+function rpg.dialog.conversation(t1, t2, rs, cb)
+  rpg.dialog.drawDialog()
+  
+  local da
+  local db
+
+  if rs then
+    db = rpg.dialog.drawInitiatorText
+    da = rpg.dialog.drawResponderText 
+  else
+    da = rpg.dialog.drawInitiatorText
+    db = rpg.dialog.drawResponderText 
+  end
+
+  da(t1, function () db(t2, cb) end)
+end
+
+function rpg.dialog.drawInitiatorText(text, cb)
   initiatorBuffer = text
+  textDrawnCb = cb
   speaker = true
   drawText(text)
 end
 
-function rpg.dialog.drawResponderText(text)
+function rpg.dialog.drawResponderText(text, cb)
   responderBuffer = text
+  textDrawnCb = cb
   speaker = false
   drawText(text)
 end
@@ -42,7 +62,7 @@ end
 function drawText(text)
   local offsetFrames = 5;
 
-  for i = 1, text:len() do
+  for i = 1, text:len() + 1 do
     ft.new(offsetFrames, renderSegment)
     offsetFrames = offsetFrames + 5;
   end
@@ -59,7 +79,10 @@ function renderSegment()
     offset = responderTextOffset
   end
 
-  if (buf:len() < 1) then return end
+  if (buf:len() < 1) then 
+    if textDrawnCb ~= nil then textDrawnCb() end
+    return 
+  end
 
   local c = buf:sub(1, 1)
   gfx.drawText(c, offset[1], offset[2])
