@@ -17,7 +17,24 @@ local textDrawnCb -- invoked when all text rendered
 
 rpg.dialog = {}
 
-function rpg.dialog.drawDialog() 
+function rpg.dialog.conversation(t1, t2, rs, cb)
+  drawDialog()
+  
+  local da
+  local db
+
+  if rs then
+    db = drawInitiatorText
+    da = drawResponderText 
+  else
+    da = drawInitiatorText
+    db = drawResponderText 
+  end
+
+  da(t1, function () db(t2, cb) end)
+end
+
+function drawDialog() 
   initiatorBuffer = ""
   responderBuffer = ""
 
@@ -28,31 +45,14 @@ function rpg.dialog.drawDialog()
   chat:draw(0, 0)
 end
 
-function rpg.dialog.conversation(t1, t2, rs, cb)
-  rpg.dialog.drawDialog()
-  
-  local da
-  local db
-
-  if rs then
-    db = rpg.dialog.drawInitiatorText
-    da = rpg.dialog.drawResponderText 
-  else
-    da = rpg.dialog.drawInitiatorText
-    db = rpg.dialog.drawResponderText 
-  end
-
-  da(t1, function () db(t2, cb) end)
-end
-
-function rpg.dialog.drawInitiatorText(text, cb)
+function drawInitiatorText(text, cb)
   initiatorBuffer = text
   textDrawnCb = cb
   speaker = true
   drawText(text)
 end
 
-function rpg.dialog.drawResponderText(text, cb)
+function drawResponderText(text, cb)
   responderBuffer = text
   textDrawnCb = cb
   speaker = false
