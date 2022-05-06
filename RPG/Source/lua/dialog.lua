@@ -7,6 +7,7 @@ local gfx = playdate.graphics
 local ft = playdate.frameTimer
 
 local initiatorBuffer
+local initiatorTextOffset
 
 rpg.dialog = {}
 
@@ -23,31 +24,21 @@ end
 
 function rpg.dialog.drawInitiatorText(text)
   initiatorBuffer = text
-  -- todo, pass arg to anon fn
-  drawText(initiationBuffer renderSegment, initiationBuffer, initiatorTextOffset)
-end
-
-function drawText(buf cb)
-  buf = text
-
-  local offset = 30;
+  local offsetFrames = 5;
 
   for i = 1, text:len() do
-    ft.new(offset, cb)
-    offset = offset + 5;
+    ft.new(offsetFrames, renderSegment)
+    offsetFrames = offsetFrames + 5;
   end
 end
 
-function renderSegment(buf, offset)
-  print('init')
-
-
-  if (buf:len() < 1) then
+function renderSegment()
+  if (initiatorBuffer:len() < 1) then
     return
   end
 
-  local c = buf:sub(1, 1)
-  gfx.drawText(c, offset[1], offset[2])
-  buf = buf:sub(2)
-  offset = {offset[1] + 10, offset[2]}
+  local c = initiatorBuffer:sub(1, 1)
+  gfx.drawText(c, initiatorTextOffset[1], initiatorTextOffset[2])
+  initiatorBuffer = initiatorBuffer:sub(2)
+  initiatorTextOffset = {initiatorTextOffset[1] + 10, initiatorTextOffset[2]}
 end
