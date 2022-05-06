@@ -9,6 +9,11 @@ local ft = playdate.frameTimer
 local initiatorBuffer
 local initiatorTextOffset
 
+local responderBuffer
+local responderTextOffset
+
+local speaker
+
 rpg.dialog = {}
 
 function rpg.dialog.drawDialog() 
@@ -24,6 +29,17 @@ end
 
 function rpg.dialog.drawInitiatorText(text)
   initiatorBuffer = text
+  speaker = true
+  drawText(text)
+end
+
+function rpg.dialog.drawResponderText(text)
+  responderBuffer = text
+  speaker = false
+  drawText(text)
+end
+
+function drawText(text)
   local offsetFrames = 5;
 
   for i = 1, text:len() do
@@ -33,12 +49,28 @@ function rpg.dialog.drawInitiatorText(text)
 end
 
 function renderSegment()
-  if (initiatorBuffer:len() < 1) then
-    return
+  local offset
+
+  if speaker then 
+    buf = initiatorBuffer 
+    offset = initiatorTextOffset
+  else 
+    buf = responderBuffer 
+    offset = responderTextOffset
   end
 
-  local c = initiatorBuffer:sub(1, 1)
-  gfx.drawText(c, initiatorTextOffset[1], initiatorTextOffset[2])
-  initiatorBuffer = initiatorBuffer:sub(2)
-  initiatorTextOffset = {initiatorTextOffset[1] + 10, initiatorTextOffset[2]}
+  if (buf:len() < 1) then return end
+
+  local c = buf:sub(1, 1)
+  gfx.drawText(c, offset[1], offset[2])
+  buf = buf:sub(2)
+  offset = {offset[1] + 10, offset[2]}
+
+  if speaker then 
+    initiatorBuffer = buf
+    initiatorTextOffset = offset
+  else 
+    responderBuffer = buf
+    responderTextOffset = offset
+  end
 end

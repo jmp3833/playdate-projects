@@ -5,8 +5,9 @@ local dialog = rpg.dialog
 
 --temp, begin rendering dialog
 dialog.drawDialog()
-dialog.drawInitiatorText("Hey there cassandra...")
 
+dialog.drawInitiatorText("Hey there...")
+dialog.drawResponderText("Nice to see u")
 
 function playdate.update()
   playdate.frameTimer.updateTimers()
