@@ -1,16 +1,23 @@
-import 'lua/dialog'
 import 'CoreLibs/timer'
+import 'lua/town'
+import 'lua/dialog'
 
 local dialog = rpg.dialog
+local town = rpg.town
 
---temp, begin rendering dialog
+--[[temp, draw a dialog between two people
+
 dialog.conversation("Hey there", 
   "nice to see u", 
   false,
   function () 
-    print('next set')
     dialog.conversation("Another response", "I see...", true) 
   end)
+
+]]--
+
+--temp, draw a town map
+town.drawGrid()
 
 function playdate.update()
   playdate.frameTimer.updateTimers()

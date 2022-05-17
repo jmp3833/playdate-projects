@@ -17,24 +17,7 @@ local textDrawnCb -- invoked when all text rendered
 
 rpg.dialog = {}
 
-function rpg.dialog.conversation(t1, t2, rs, cb)
-  drawDialog()
-  
-  local da
-  local db
-
-  if rs then
-    db = drawInitiatorText
-    da = drawResponderText 
-  else
-    da = drawInitiatorText
-    db = drawResponderText 
-  end
-
-  da(t1, function () db(t2, cb) end)
-end
-
-function drawDialog() 
+local function drawDialog() 
   initiatorBuffer = ""
   responderBuffer = ""
 
@@ -45,30 +28,7 @@ function drawDialog()
   chat:draw(0, 0)
 end
 
-function drawInitiatorText(text, cb)
-  initiatorBuffer = text
-  textDrawnCb = cb
-  speaker = true
-  drawText(text)
-end
-
-function drawResponderText(text, cb)
-  responderBuffer = text
-  textDrawnCb = cb
-  speaker = false
-  drawText(text)
-end
-
-function drawText(text)
-  local offsetFrames = 5;
-
-  for i = 1, text:len() + 1 do
-    ft.new(offsetFrames, renderSegment)
-    offsetFrames = offsetFrames + 5;
-  end
-end
-
-function renderSegment()
+local function renderChar()
   local offset
 
   if speaker then 
@@ -96,4 +56,44 @@ function renderSegment()
     responderBuffer = buf
     responderTextOffset = offset
   end
+end
+
+local function drawText(text)
+  local offsetFrames = 5;
+
+  for i = 1, text:len() + 1 do
+    ft.new(offsetFrames, renderChar)
+    offsetFrames = offsetFrames + 5;
+  end
+end
+
+local function drawInitiatorText(text, cb)
+  initiatorBuffer = text
+  textDrawnCb = cb
+  speaker = true
+  drawText(text)
+end
+
+local function drawResponderText(text, cb)
+  responderBuffer = text
+  textDrawnCb = cb
+  speaker = false
+  drawText(text)
+end
+
+function rpg.dialog.conversation(t1, t2, rs, cb)
+  drawDialog()
+  
+  local da
+  local db
+
+  if rs then
+    db = drawInitiatorText
+    da = drawResponderText 
+  else
+    da = drawInitiatorText
+    db = drawResponderText 
+  end
+
+  da(t1, function () db(t2, cb) end)
 end
